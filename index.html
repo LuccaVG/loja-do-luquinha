@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loja do Luquinha - Sua Loja Online de Confiança</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --cor-primaria: #ff6b35;
+            --cor-secundaria: #764ba2;
+            --cor-fundo: #f8f9fa;
+            --cor-texto: #333;
+            --cor-branca: #fff;
+            --cor-sucesso: #28a745;
+            --cor-erro: #dc3545;
+            --gradiente-principal: linear-gradient(135deg, var(--cor-primaria), var(--cor-secundaria));
+            --sombra-suave: 0 8px 25px rgba(0, 0, 0, 0.08);
+            --sombra-forte: 0 15px 35px rgba(0, 0, 0, 0.12);
+            --transicao-rapida: all 0.3s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+        body { font-family: 'Poppins', sans-serif; line-height: 1.6; color: var(--cor-texto); background-color: var(--cor-fundo); overflow-x: hidden; }
+        
+        .page { display: none; padding-top: 80px; animation: fadeIn 0.5s ease-in-out; }
+        .page.active { display: block; }
+
+        /* --- Header --- */
+        header { position: fixed; top: 0; width: 100%; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); z-index: 1000; padding: 1rem 0; box-shadow: var(--sombra-suave); transition: var(--transicao-rapida); }
+        .nav-container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.8rem; font-weight: 700; color: var(--cor-primaria); text-decoration: none; cursor: pointer; }
+        .main-nav { display: flex; }
+        nav ul { list-style: none; display: flex; gap: 1.5rem; align-items: center; }
+        nav a { text-decoration: none; color: var(--cor-texto); font-weight: 500; position: relative; padding: 0.5rem 0; cursor: pointer; }
+        nav a::after { content: ''; position: absolute; width: 0; height: 3px; bottom: 0; left: 50%; transform: translateX(-50%); background: var(--gradiente-principal); transition: width 0.3s ease; border-radius: 2px; }
+        nav a:hover::after, nav a.active::after { width: 100%; }
+        .nav-actions { display: flex; align-items: center; gap: 1rem; }
+        .cart-icon { position: relative; font-size: 1.5rem; color: var(--cor-primaria); cursor: pointer; }
+        .cart-count { position: absolute; top: -8px; right: -8px; background: var(--cor-primaria); color: var(--cor-branca); border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; transition: transform 0.2s; }
+        .cart-icon.animate .cart-count { animation: cart-throb 0.3s ease-in-out; }
+        .mobile-menu { display: none; cursor: pointer; font-size: 1.8rem; color: var(--cor-primaria); }
+
+        /* --- Hero Section --- */
+        .hero { height: 100vh; background: var(--gradiente-principal); display: flex; align-items: center; justify-content: center; text-align: center; position: relative; overflow: hidden; color: var(--cor-branca); margin-top: -80px; }
+        .hero-content { z-index: 2; max-width: 800px; padding: 0 2rem; }
+        .hero h1 { font-size: 3.5rem; font-weight: 700; margin-bottom: 1rem; }
+        .hero p { font-size: 1.3rem; margin-bottom: 2rem; opacity: 0.9; }
+        .cta-button { display: inline-block; padding: 1rem 2.5rem; background: var(--cor-branca); color: var(--cor-primaria); text-decoration: none; border-radius: 50px; font-weight: 600; transition: var(--transicao-rapida); box-shadow: 0 4px 15px rgba(0,0,0,0.1); cursor: pointer; }
+        .cta-button:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .cta-button:disabled { background-color: #ccc; cursor: not-allowed; }
+
+        /* --- General Section & Form Styling --- */
+        .container { max-width: 1200px; margin: 0 auto; padding: 4rem 2rem; }
+        .section-title { text-align: center; font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; position: relative; }
+        .section-title::after { content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 80px; height: 4px; background: var(--gradiente-principal); border-radius: 2px; }
+        .section-subtitle { text-align: center; font-size: 1.1rem; color: #666; margin-bottom: 3rem; }
+        .form-container { max-width: 500px; margin: 2rem auto; padding: 2rem; background: var(--cor-branca); border-radius: 15px; box-shadow: var(--sombra-suave); }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; }
+        .form-group input { width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+
+        /* --- Features Section --- */
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 3rem; }
+        .feature-item { text-align: center; padding: 1.5rem; }
+        .feature-item .icon { font-size: 3rem; color: var(--cor-primaria); margin-bottom: 1rem; }
+        .feature-item h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
+        .feature-item p { color: #666; font-size: 0.9rem; }
+
+        /* --- Products Page --- */
+        .product-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+        .search-box, .sort-box { display: flex; align-items: center; gap: 0.5rem; }
+        #search-input, #sort-select { padding: 0.8rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
+        .product-card { background: var(--cor-branca); border-radius: 15px; overflow: hidden; box-shadow: var(--sombra-suave); transition: var(--transicao-rapida); display: flex; flex-direction: column; }
+        .product-card:hover { transform: translateY(-8px); box-shadow: var(--sombra-forte); }
+        .product-image { width: 100%; height: 220px; object-fit: cover; }
+        .product-info { padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1; }
+        .product-name { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .product-description { color: #666; font-size: 0.9rem; margin-bottom: 1rem; flex-grow: 1; }
+        .product-price { font-size: 1.4rem; font-weight: 700; color: var(--cor-primaria); margin-bottom: 1rem; }
+        .add-to-cart { width: 100%; padding: 0.8rem; background: var(--gradiente-principal); color: var(--cor-branca); border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: var(--transicao-rapida); margin-top: auto; }
+        .add-to-cart:hover:not(:disabled) { opacity: 0.9; box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3); }
+        .add-to-cart:disabled { background: var(--cor-sucesso); cursor: not-allowed; }
+
+        /* --- Cart & Account Pages --- */
+        .cart-container, .account-container { max-width: 900px; margin: 0 auto; background: var(--cor-branca); padding: 2rem; border-radius: 15px; box-shadow: var(--sombra-suave); }
+        .cart-item, .order-item { display: flex; align-items: center; gap: 1.5rem; padding: 1.5rem 0; border-bottom: 1px solid #eee; }
+        .cart-item:last-child, .order-item:last-child { border-bottom: none; }
+        .cart-item-img { width: 80px; height: 80px; object-fit: cover; border-radius: 10px; }
+        .cart-item-info, .order-info { flex-grow: 1; }
+        .cart-item-info h4, .order-info h4 { margin-bottom: 0.5rem; }
+        .cart-item-price, .order-info p { font-weight: 600; color: #555; }
+        .cart-item-remove { color: #ff4d4d; cursor: pointer; transition: color 0.3s; font-size: 1.2rem; }
+        .cart-item-remove:hover { color: #cc0000; }
+        .cart-summary { margin-top: 2rem; text-align: right; }
+        .cart-total { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; }
+        .empty-cart-message { text-align: center; padding: 3rem; }
+        .empty-cart-message i { font-size: 4rem; color: #ddd; margin-bottom: 1rem; }
+        .empty-cart-message p { font-size: 1.2rem; color: #888; margin-bottom: 1.5rem; }
+        #account-details { margin-bottom: 2rem; }
+        #account-details p { font-size: 1.1rem; margin-bottom: 0.5rem; }
+
+        /* --- Footer & Scroll-to-Top --- */
+        footer { background: #222; color: #ccc; padding: 3rem 0 1rem; }
+        .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; padding: 0 2rem; max-width: 1200px; margin: 0 auto 2rem; }
+        .footer-section h3 { font-size: 1.3rem; color: var(--cor-primaria); margin-bottom: 1rem; }
+        .footer-section a { color: #ccc; text-decoration: none; margin-bottom: 0.5rem; display: block; transition: color 0.3s ease; cursor: pointer; }
+        .footer-section a:hover { color: var(--cor-primaria); }
+        .footer-bottom { text-align: center; padding-top: 2rem; border-top: 1px solid #444; color: #999; max-width: 1200px; margin: 0 auto; }
+        #scroll-to-top { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: var(--cor-primaria); color: var(--cor-branca); border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; transition: opacity 0.3s, transform 0.3s; opacity: 0; transform: translateY(20px); z-index: 999; }
+        #scroll-to-top.visible { opacity: 1; transform: translateY(0); }
+
+        /* --- Notification System --- */
+        #notification-container { position: fixed; top: 100px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 10px; }
+        .notification { padding: 15px 25px; border-radius: 10px; color: var(--cor-branca); box-shadow: var(--sombra-forte); display: flex; align-items: center; gap: 15px; transform: translateX(120%); animation: slideInNotification 0.5s forwards; }
+        .notification.success { background-color: var(--cor-sucesso); }
+        .notification.info { background-color: #17a2b8; }
+        .notification.error { background-color: var(--cor-erro); }
+        .notification i { font-size: 1.5rem; }
+        @keyframes slideInNotification { to { transform: translateX(0); } }
+        @keyframes slideOutNotification { from { transform: translateX(0); } to { transform: translateX(120%); } }
+
+        /* --- Animations & Utilities --- */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes cart-throb { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+        .hidden { display: none !important; }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 768px) {
+            .nav-container { padding: 0 1rem; }
+            .logo { font-size: 1.5rem; }
+            .main-nav { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(5px); flex-direction: column; justify-content: center; align-items: center; transform: translateX(-100%); transition: transform 0.4s ease-in-out; }
+            .main-nav.nav-open { transform: translateX(0); }
+            .main-nav ul { flex-direction: column; gap: 2rem; }
+            .main-nav a { font-size: 1.5rem; }
+            .mobile-menu { display: block; z-index: 1001; }
+            .hero h1 { font-size: 2.5rem; }
+            .hero p { font-size: 1.1rem; }
+            .container { padding: 3rem 1rem; }
+            .section-title { font-size: 2rem; }
+            .product-controls { flex-direction: column; }
+            .footer-content { grid-template-columns: 1fr; text-align: center; }
+            .cart-item, .order-item { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <div id="notification-container"></div>
+    <a id="scroll-to-top"><i class="fas fa-arrow-up"></i></a>
+
+    <header>
+        <div class="nav-container">
+            <a class="logo" data-page="home">Loja do Luquinha</a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a data-page="home" class="nav-link active">Início</a></li>
+                    <li><a data-page="products" class="nav-link">Produtos</a></li>
+                    <li><a data-page="about" class="nav-link">Sobre</a></li>
+                    <li id="admin-link-container" class="hidden"><a data-page="admin" class="nav-link">Admin</a></li>
+                    <li id="auth-link-container"><a data-page="login" class="nav-link">Login</a></li>
+                </ul>
+            </nav>
+            <div class="nav-actions">
+                <div class="cart-icon" data-page="cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count">0</span>
+                </div>
+                <div class="mobile-menu">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div id="home-page" class="page active">
+            <section class="hero">
+                <div class="hero-content">
+                    <h1 id="hero-title">Bem-vindo à Loja do Luquinha</h1>
+                    <p>Qualidade e confiança em cada produto. As melhores ofertas estão aqui!</p>
+                    <a class="cta-button" data-page="products">Explorar Produtos</a>
+                </div>
+            </section>
+            <section class="container">
+                <h2 class="section-title">Produtos em Destaque</h2>
+                <p class="section-subtitle">Uma seleção especial dos nossos itens mais populares.</p>
+                <div class="products-grid" id="featured-products-grid"></div>
+            </section>
+            <section class="container" style="background-color: var(--cor-branca); border-radius: 15px;">
+                <h2 class="section-title">Nossos Diferenciais</h2>
+                <p class="section-subtitle">Por que comprar com a gente?</p>
+                <div class="features-grid">
+                    <div class="feature-item"><div class="icon"><i class="fas fa-shipping-fast"></i></div><h3>Entrega Rápida</h3><p>Receba seus produtos em tempo recorde.</p></div>
+                    <div class="feature-item"><div class="icon"><i class="fas fa-shield-alt"></i></div><h3>Pagamento Seguro</h3><p>Seus dados protegidos com alta tecnologia.</p></div>
+                    <div class="feature-item"><div class="icon"><i class="fas fa-medal"></i></div><h3>Qualidade Garantida</h3><p>Selecionamos os melhores produtos para você.</p></div>
+                    <div class="feature-item"><div class="icon"><i class="fas fa-headset"></i></div><h3>Suporte 24/7</h3><p>Nossa equipe está sempre pronta para ajudar.</p></div>
+                </div>
+            </section>
+        </div>
+
+        <div id="products-page" class="page">
+            <section class="container">
+                <h2 class="section-title">Todos os Produtos</h2>
+                <p class="section-subtitle">Encontre tudo o que você precisa em um só lugar.</p>
+                <div class="product-controls">
+                    <div class="search-box"><input type="text" id="search-input" placeholder="Buscar por nome..."></div>
+                    <div class="sort-box"><label for="sort-select">Ordenar por:</label><select id="sort-select"><option value="default">Padrão</option><option value="price-asc">Preço: Menor para Maior</option><option value="price-desc">Preço: Maior para Menor</option><option value="name-asc">Nome: A-Z</option><option value="name-desc">Nome: Z-A</option></select></div>
+                </div>
+                <div class="products-grid" id="all-products-grid"></div>
+            </section>
+        </div>
+
+        <div id="about-page" class="page"><section class="container"><h2 class="section-title">Sobre Nós</h2><p class="section-subtitle">Nossa história e nosso compromisso com você.</p><p style="text-align:center; max-width: 800px; margin: 0 auto;">Na Loja do Luquinha, acreditamos que a tecnologia e o bom gosto andam de mãos dadas. Nascemos da paixão por produtos inovadores que facilitam e embelezam o dia a dia. Nossa missão é oferecer uma curadoria de itens de alta qualidade, com design moderno e preços justos. Cada produto em nosso catálogo é selecionado pensando em você, nosso cliente. Bem-vindo à nossa família!</p></section></div>
+        
+        <div id="cart-page" class="page"><section class="container"><h2 class="section-title">Meu Carrinho</h2><div class="cart-container" id="cart-container"></div></section></div>
+
+        <div id="login-page" class="page">
+            <section class="container">
+                <h2 class="section-title">Login</h2>
+                <p class="section-subtitle">Acesse sua conta para ver seus pedidos.</p>
+                <div class="form-container">
+                    <form id="login-form">
+                        <div class="form-group"><label for="email">Email</label><input type="email" id="login-email" required></div>
+                        <div class="form-group"><label for="password">Senha</label><input type="password" id="login-password" required></div>
+                        <button type="submit" class="cta-button" style="width: 100%;">Entrar</button>
+                    </form>
+                    <p style="text-align: center; margin-top: 1.5rem;">Não tem uma conta? <a data-page="signup" style="color: var(--cor-primaria); font-weight: 600;">Crie uma agora</a>.</p>
+                </div>
+                 <p style="text-align: center; margin-top: 1rem;"><b>Admin:</b> admin@email.com (senha: admin123)<br><b>Usuário:</b> usuario@email.com (senha: senha123)</p>
+            </section>
+        </div>
+
+        <div id="signup-page" class="page">
+            <section class="container">
+                <h2 class="section-title">Crie sua Conta</h2>
+                <p class="section-subtitle">É rápido e fácil. Comece a comprar agora mesmo!</p>
+                <div class="form-container">
+                    <form id="signup-form">
+                        <div class="form-group"><label for="name">Nome</label><input type="text" id="signup-name" required></div>
+                        <div class="form-group"><label for="email">Email</label><input type="email" id="signup-email" required></div>
+                        <div class="form-group"><label for="password">Senha</label><input type="password" id="signup-password" required></div>
+                        <button type="submit" class="cta-button" style="width: 100%;">Criar Conta</button>
+                    </form>
+                    <p style="text-align: center; margin-top: 1.5rem;">Já tem uma conta? <a data-page="login" style="color: var(--cor-primaria); font-weight: 600;">Faça login</a>.</p>
+                </div>
+            </section>
+        </div>
+
+        <div id="account-page" class="page">
+            <section class="container">
+                <h2 class="section-title" id="account-title"></h2>
+                <div class="account-container">
+                    <div id="account-details"></div>
+                    <h3>Histórico de Pedidos</h3>
+                    <div id="order-history"></div>
+                    <button id="logout-btn" class="cta-button" style="background: var(--cor-erro); color: var(--cor-branca); margin-top: 2rem;">Sair</button>
+                </div>
+            </section>
+        </div>
+
+        <div id="admin-page" class="page">
+            <section class="container">
+                <h2 class="section-title">Painel do Administrador</h2>
+                <div class="form-container">
+                    <h3 style="margin-bottom: 1.5rem; text-align: center;">Adicionar Novo Produto</h3>
+                    <form id="add-product-form">
+                        <div class="form-group"><label for="product-name">Nome do Produto</label><input type="text" id="product-name" required></div>
+                        <div class="form-group"><label for="product-description">Descrição</label><input type="text" id="product-description" required></div>
+                        <div class="form-group"><label for="product-price">Preço</label><input type="number" id="product-price" step="0.01" required></div>
+                        <div class="form-group"><label for="product-image">Imagem do Produto</label><input type="file" id="product-image" accept="image/*" required></div>
+                        <button type="submit" class="cta-button" style="width: 100%;">Adicionar Produto</button>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section"><h3>Loja do Luquinha</h3><p>Sua loja online de confiança.</p></div>
+            <div class="footer-section"><h3>Navegação</h3><a data-page="home">Início</a><a data-page="products">Produtos</a><a data-page="about">Sobre</a></div>
+            <div class="footer-section"><h3>Contato</h3><p><i class="fas fa-envelope"></i> contato@lojadoluquinha.com.br</p><p><i class="fas fa-phone"></i> (11) 99999-9999</p></div>
+        </div>
+        <div class="footer-bottom"><p>&copy; 2025 Loja do Luquinha. Todos os direitos reservados.</p></div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- FAKE API & AUTH ---
+            const fakeApi = {
+                users: [
+                    { name: 'Admin', email: 'admin@email.com', password: 'admin123', role: 'admin', joined: 'Agosto de 2025' },
+                    { name: 'Lucca', email: 'usuario@email.com', password: 'senha123', role: 'user', joined: 'Setembro de 2025' }
+                ],
+                products: [
+                    { id: 1, name: 'Smartphone Premium', description: 'Tecnologia de ponta com design elegante.', price: 1299.00, image: 'https://images.pexels.com/photos/1092644/pexels-photo-1092644.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+                    { id: 2, name: 'Tênis Esportivo', description: 'Conforto e estilo para seus treinos.', price: 299.00, image: 'https://images.pexels.com/photos/19090/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+                    { id: 3, name: 'Óculos de Sol Aviador', description: 'Proteção UV total com estilo clássico.', price: 189.00, image: 'https://images.pexels.com/photos/2846814/pexels-photo-2846814.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+                    { id: 4, name: 'Relógio Inteligente', description: 'Monitore sua saúde e fique conectado.', price: 899.00, image: 'https://images.pexels.com/photos/2783873/pexels-photo-2783873.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+                    { id: 5, name: 'Fones Bluetooth Pro', description: 'Som de alta fidelidade, sem fios.', price: 399.00, image: 'https://images.pexels.com/photos/3825517/pexels-photo-3825517.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+                    { id: 6, name: 'Mochila Executiva', description: 'Elegante e funcional para o dia a dia.', price: 159.00, image: 'https://images.pexels.com/photos/1545743/pexels-photo-1545743.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+                    { id: 7, name: 'Câmera Mirrorless', description: 'Capture momentos com resolução incrível.', price: 2499.00, image: 'https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+                    { id: 8, name: 'Notebook Ultra Fino', description: 'Performance e portabilidade para seu trabalho.', price: 3499.00, image: 'https://images.pexels.com/photos/812264/pexels-photo-812264.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+                    { id: 9, name: 'Drone Explorer 4K', description: 'Vistas aéreas deslumbrantes em 4K.', price: 1899.00, image: 'https://images.pexels.com/photos/3945657/pexels-photo-3945657.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+                    { id: 10, name: 'Console de Videogame', description: 'Diversão garantida para toda a família.', price: 2299.00, image: 'https://images.pexels.com/photos/4219916/pexels-photo-4219916.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+                    { id: 11, name: 'Smart Speaker', description: 'Sua casa mais inteligente e conectada.', price: 349.00, image: 'https://images.pexels.com/photos/4009409/pexels-photo-4009409.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+                    { id: 12, name: 'Cafeteira Italiana', description: 'O café perfeito, com método tradicional.', price: 129.00, image: 'https://images.pexels.com/photos/373639/pexels-photo-373639.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+                    { id: 13, name: 'Jaqueta de Couro', description: 'Estilo atemporal e durabilidade.', price: 599.00, image: 'https://images.pexels.com/photos/242829/pexels-photo-242829.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+                    { id: 14, name: 'Cadeira de Escritório', description: 'Ergonomia e conforto para seu home office.', price: 799.00, image: 'https://images.pexels.com/photos/723997/pexels-photo-723997.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+                    { id: 15, name: 'Monitor Ultrawide', description: 'Mais produtividade e imersão.', price: 1599.00, image: 'https://images.pexels.com/photos/1029757/pexels-photo-1029757.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+                    { id: 16, name: 'Teclado Mecânico RGB', description: 'Precisão e estilo para gamers e devs.', price: 450.00, image: 'https://images.pexels.com/photos/841228/pexels-photo-841228.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+                    { id: 17, name: 'Mouse Gamer Sem Fio', description: 'Liberdade e precisão para seus jogos.', price: 320.00, image: 'https://images.pexels.com/photos/7915219/pexels-photo-7915219.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+                    { id: 18, name: 'Headset 7.1 Surround', description: 'Imersão total no áudio dos seus jogos.', price: 550.00, image: 'https://images.pexels.com/photos/1036856/pexels-photo-1036856.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+                    { id: 19, name: 'Planta Decorativa', description: 'Um toque de natureza para seu ambiente.', price: 49.00, image: 'https://images.pexels.com/photos/1671650/pexels-photo-1671650.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+                    { id: 20, name: 'Luminária de Mesa LED', description: 'Design moderno e iluminação ajustável.', price: 120.00, image: 'https://images.pexels.com/photos/1112598/pexels-photo-1112598.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+                    { id: 21, name: 'Garrafa Térmica Inox', description: 'Sua bebida na temperatura ideal por horas.', price: 89.00, image: 'https://images.pexels.com/photos/932401/pexels-photo-932401.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+                    { id: 22, name: 'Kit de Ferramentas', description: 'Completo para pequenos reparos em casa.', price: 199.00, image: 'https://images.pexels.com/photos/1216589/pexels-photo-1216589.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+                    { id: 23, name: 'Violão Acústico', description: 'Ideal para iniciantes e entusiastas.', price: 350.00, image: 'https://images.pexels.com/photos/164829/pexels-photo-164829.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+                    { id: 24, name: 'Bicicleta Urbana', description: 'Mobilidade e saúde para seu dia a dia.', price: 999.00, image: 'https://images.pexels.com/photos/276517/pexels-photo-276517.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+                ],
+                login: function(email, password) {
+                    return new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                            const user = this.users.find(u => u.email === email && u.password === password);
+                            if (user) {
+                                localStorage.setItem('fakeAuthToken', JSON.stringify(user));
+                                resolve(user);
+                            } else {
+                                reject('Email ou senha inválidos.');
+                            }
+                        }, 500);
+                    });
+                },
+                signup: function(name, email, password) {
+                    return new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                            if (this.users.some(u => u.email === email)) {
+                                reject('Este email já está em uso.');
+                                return;
+                            }
+                            const newUser = { name, email, password, role: 'user', joined: new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }) };
+                            this.users.push(newUser);
+                            localStorage.setItem('fakeAuthToken', JSON.stringify(newUser));
+                            resolve(newUser);
+                        }, 500);
+                    });
+                },
+                logout: function() { localStorage.removeItem('fakeAuthToken'); },
+                getAccountDetails: function() {
+                    const user = JSON.parse(localStorage.getItem('fakeAuthToken'));
+                    return user ? { ...user, orders: [{id: '#123', date: '01/09/2025', total: 'R$ 1.488,00', items: 2}] } : null;
+                },
+                isLoggedIn: function() { return localStorage.getItem('fakeAuthToken') !== null; },
+                getProducts: function() {
+                    return new Promise((resolve) => {
+                        setTimeout(() => resolve(this.products), 300);
+                    });
+                },
+                addProduct: function(productData) {
+                    return new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                            const currentUser = this.getAccountDetails();
+                            if (currentUser && currentUser.role === 'admin') {
+                                const newProduct = {
+                                    id: this.products.length + 1,
+                                    ...productData
+                                };
+                                this.products.push(newProduct);
+                                resolve(newProduct);
+                            } else {
+                                reject('Apenas administradores podem adicionar produtos.');
+                            }
+                        }, 500);
+                    });
+                }
+            };
+
+            // --- STATE MANAGEMENT ---
+            const state = {
+                products: [],
+                cart: [],
+                isLoggedIn: false,
+                currentUser: null
+            };
+
+            // --- DOM ELEMENTS ---
+            const dom = {
+                pages: document.querySelectorAll('.page'),
+                navLinks: document.querySelectorAll('.nav-link'),
+                pageLinks: document.querySelectorAll('[data-page]'),
+                featuredGrid: document.getElementById('featured-products-grid'),
+                allProductsGrid: document.getElementById('all-products-grid'),
+                cartContainer: document.getElementById('cart-container'),
+                cartIcon: document.querySelector('.cart-icon'),
+                cartCount: document.querySelector('.cart-count'),
+                mobileMenuIcon: document.querySelector('.mobile-menu'),
+                mainNav: document.querySelector('.main-nav'),
+                notificationContainer: document.getElementById('notification-container'),
+                searchInput: document.getElementById('search-input'),
+                sortSelect: document.getElementById('sort-select'),
+                scrollToTopBtn: document.getElementById('scroll-to-top'),
+                loginForm: document.getElementById('login-form'),
+                signupForm: document.getElementById('signup-form'),
+                accountTitle: document.getElementById('account-title'),
+                accountDetails: document.getElementById('account-details'),
+                orderHistory: document.getElementById('order-history'),
+                logoutBtn: document.getElementById('logout-btn'),
+                authLinkContainer: document.getElementById('auth-link-container'),
+                adminLinkContainer: document.getElementById('admin-link-container'),
+                heroTitle: document.getElementById('hero-title'),
+                addProductForm: document.getElementById('add-product-form')
+            };
+
+            // --- RENDER & UI FUNCTIONS ---
+            function createProductCard(product) {
+                const isAdded = state.cart.some(item => item.id === product.id);
+                return `
+                    <div class="product-card">
+                        <img src="${product.image}" alt="${product.name}" class="product-image">
+                        <div class="product-info">
+                            <h3 class="product-name">${product.name}</h3>
+                            <p class="product-description">${product.description}</p>
+                            <div class="product-price">R$ ${product.price.toFixed(2).replace('.',',')}</div>
+                            <button class="add-to-cart" data-id="${product.id}" ${isAdded ? 'disabled' : ''}>${isAdded ? 'Adicionado ✓' : 'Adicionar ao Carrinho'}</button>
+                        </div>
+                    </div>`;
+            }
+
+            function renderProducts(products = state.products) {
+                dom.allProductsGrid.innerHTML = products.map(createProductCard).join('');
+                if (products.length === 0) dom.allProductsGrid.innerHTML = '<p>Nenhum produto encontrado.</p>';
+            }
+
+            function renderFeaturedProducts() {
+                dom.featuredGrid.innerHTML = state.products.slice(0, 6).map(createProductCard).join('');
+            }
+
+            function renderCart() {
+                dom.cartCount.textContent = state.cart.length;
+                if (state.cart.length === 0) {
+                    dom.cartContainer.innerHTML = `<div class="empty-cart-message"><i class="fas fa-shopping-cart"></i><p>Seu carrinho está vazio.</p><a class="cta-button" data-page="products">Ver produtos</a></div>`;
+                    return;
+                }
+                let total = 0;
+                dom.cartContainer.innerHTML = state.cart.map(item => {
+                    total += item.price;
+                    return `<div class="cart-item"><img src="${item.image}" alt="${item.name}" class="cart-item-img"><div class="cart-item-info"><h4>${item.name}</h4><p class="cart-item-price">R$ ${item.price.toFixed(2).replace('.',',')}</p></div><i class="fas fa-trash cart-item-remove" data-id="${item.cartItemId}"></i></div>`;
+                }).join('');
+                dom.cartContainer.innerHTML += `<div class="cart-summary"><div class="cart-total">Total: R$ ${total.toFixed(2).replace('.',',')}</div><button class="cta-button" id="checkout-btn">Finalizar Compra</button></div>`;
+            }
+
+            function renderAccountPage() {
+                if (!state.isLoggedIn) return;
+                const account = state.currentUser;
+                dom.accountTitle.textContent = `Bem-vindo, ${account.name}!`;
+                dom.accountDetails.innerHTML = `<p><strong>Email:</strong> ${account.email}</p><p><strong>Membro desde:</strong> ${account.joined}</p><p><strong>Tipo de Conta:</strong> ${account.role === 'admin' ? 'Administrador' : 'Usuário'}</p>`;
+                dom.orderHistory.innerHTML = '<p>Nenhum pedido encontrado.</p>';
+            }
+
+            function updateAuthUI() {
+                const authLink = dom.authLinkContainer.querySelector('a');
+                if (state.isLoggedIn) {
+                    authLink.textContent = 'Minha Conta';
+                    authLink.dataset.page = 'account';
+                    dom.heroTitle.textContent = `Olá, ${state.currentUser.name}!`;
+                    if (state.currentUser.role === 'admin') {
+                        dom.adminLinkContainer.classList.remove('hidden');
+                    }
+                } else {
+                    authLink.textContent = 'Login';
+                    authLink.dataset.page = 'login';
+                    dom.heroTitle.textContent = 'Bem-vindo à Loja do Luquinha';
+                    dom.adminLinkContainer.classList.add('hidden');
+                }
+            }
+
+            function render() {
+                const filteredProducts = getFilteredAndSortedProducts();
+                renderProducts(filteredProducts);
+                renderFeaturedProducts();
+                renderCart();
+                if(state.isLoggedIn) renderAccountPage();
+                updateAuthUI();
+            }
+
+            // --- ACTIONS ---
+            function showPage(pageId) {
+                if (!pageId) return;
+                if ((pageId === 'account' || pageId === 'admin' || pageId === 'cart') && !state.isLoggedIn) {
+                    showNotification('Você precisa fazer login para acessar esta página.', 'info');
+                    pageId = 'login';
+                }
+                if (pageId === 'admin' && state.currentUser?.role !== 'admin') {
+                    showNotification('Acesso negado. Apenas para administradores.', 'error');
+                    pageId = 'home';
+                }
+                dom.pages.forEach(page => page.classList.toggle('active', page.id === pageId + '-page'));
+                dom.navLinks.forEach(link => {
+                    link.classList.toggle('active', link.dataset.page === pageId)
+                });
+                dom.mainNav.classList.remove('nav-open');
+                window.scrollTo(0, 0);
+            }
+
+            function addToCart(productId) {
+                if (!state.isLoggedIn) {
+                    showNotification('Faça login para adicionar itens ao carrinho.', 'info');
+                    showPage('login');
+                    return;
+                }
+                if (state.cart.some(item => item.id === productId)) return;
+                const product = state.products.find(p => p.id === productId);
+                if (product) {
+                    state.cart.push({ ...product, cartItemId: Date.now() });
+                    render();
+                    showNotification(`"${product.name}" foi adicionado!`);
+                    dom.cartIcon.classList.add('animate');
+                    setTimeout(() => dom.cartIcon.classList.remove('animate'), 300);
+                }
+            }
+
+            function removeFromCart(cartItemId) {
+                const itemIndex = state.cart.findIndex(item => item.cartItemId === cartItemId);
+                if (itemIndex > -1) {
+                    const removedItem = state.cart[itemIndex];
+                    state.cart.splice(itemIndex, 1);
+                    render();
+                    showNotification(`"${removedItem.name}" foi removido.`, 'info');
+                }
+            }
+
+            function handleLogin(e) {
+                e.preventDefault();
+                const email = dom.loginForm.querySelector('#login-email').value;
+                const password = dom.loginForm.querySelector('#login-password').value;
+                fakeApi.login(email, password).then(user => {
+                    state.isLoggedIn = true;
+                    state.currentUser = user;
+                    render();
+                    showPage('account');
+                    showNotification(`Login bem-sucedido, ${user.name}!`);
+                }).catch(error => {
+                    showNotification(error, 'error');
+                });
+            }
+
+            function handleSignup(e) {
+                e.preventDefault();
+                const name = dom.signupForm.querySelector('#signup-name').value;
+                const email = dom.signupForm.querySelector('#signup-email').value;
+                const password = dom.signupForm.querySelector('#signup-password').value;
+                fakeApi.signup(name, email, password).then(user => {
+                    state.isLoggedIn = true;
+                    state.currentUser = user;
+                    render();
+                    showPage('account');
+                    showNotification(`Conta criada com sucesso, ${user.name}!`);
+                }).catch(error => {
+                    showNotification(error, 'error');
+                });
+            }
+
+            function handleLogout() {
+                fakeApi.logout();
+                state.isLoggedIn = false;
+                state.currentUser = null;
+                render();
+                showPage('home');
+                showNotification('Você saiu da sua conta.', 'info');
+            }
+
+            function handleAddProduct(e) {
+                e.preventDefault();
+                const name = dom.addProductForm.querySelector('#product-name').value;
+                const description = dom.addProductForm.querySelector('#product-description').value;
+                const price = parseFloat(dom.addProductForm.querySelector('#product-price').value);
+                const imageFile = dom.addProductForm.querySelector('#product-image').files[0];
+
+                if (!imageFile) {
+                    showNotification('Por favor, selecione uma imagem.', 'error');
+                    return;
+                }
+
+                const imageUrl = URL.createObjectURL(imageFile);
+
+                fakeApi.addProduct({ name, description, price, image: imageUrl })
+                    .then(newProduct => {
+                        state.products.push(newProduct);
+                        render();
+                        showNotification('Produto adicionado com sucesso!');
+                        dom.addProductForm.reset();
+                        showPage('products');
+                    })
+                    .catch(error => {
+                        URL.revokeObjectURL(imageUrl); // Clean up the object URL if the API call fails
+                        showNotification(error, 'error');
+                    });
+            }
+
+            function showNotification(message, type = 'success') {
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                const icon = type === 'success' ? 'fa-check-circle' : (type === 'error' ? 'fa-times-circle' : 'fa-info-circle');
+                notification.innerHTML = `<i class="fas ${icon}"></i> ${message}`;
+                dom.notificationContainer.appendChild(notification);
+                setTimeout(() => {
+                    notification.style.animation = 'slideOutNotification 0.5s forwards';
+                    setTimeout(() => notification.remove(), 500);
+                }, 3000);
+            }
+
+            function getFilteredAndSortedProducts() {
+                let filtered = [...state.products];
+                const searchTerm = dom.searchInput.value.toLowerCase();
+                if (searchTerm) {
+                    filtered = filtered.filter(p => p.name.toLowerCase().includes(searchTerm) || p.description.toLowerCase().includes(searchTerm));
+                }
+                const sortValue = dom.sortSelect.value;
+                switch (sortValue) {
+                    case 'price-asc': filtered.sort((a, b) => a.price - b.price); break;
+                    case 'price-desc': filtered.sort((a, b) => b.price - a.price); break;
+                    case 'name-asc': filtered.sort((a, b) => a.name.localeCompare(b.name)); break;
+                    case 'name-desc': filtered.sort((a, b) => b.name.localeCompare(a.name)); break;
+                }
+                return filtered;
+            }
+
+            function handleSearchAndSort() {
+                render();
+            }
+
+            // --- EVENT LISTENERS ---
+            dom.pageLinks.forEach(link => link.addEventListener('click', (e) => { e.preventDefault(); if (link.dataset.page) showPage(link.dataset.page); }));
+            dom.mobileMenuIcon.addEventListener('click', () => dom.mainNav.classList.toggle('nav-open'));
+            dom.searchInput.addEventListener('input', handleSearchAndSort);
+            dom.sortSelect.addEventListener('change', handleSearchAndSort);
+            dom.loginForm.addEventListener('submit', handleLogin);
+            dom.signupForm.addEventListener('submit', handleSignup);
+            dom.logoutBtn.addEventListener('click', handleLogout);
+            dom.addProductForm.addEventListener('submit', handleAddProduct);
+
+            document.addEventListener('click', function(e) {
+                const target = e.target;
+                if (target.classList.contains('add-to-cart')) {
+                    addToCart(parseInt(target.dataset.id));
+                }
+                if (target.matches('[data-page]')) {
+                    showPage(target.dataset.page);
+                }
+                if (target.id === 'checkout-btn') {
+                    if (!state.isLoggedIn) {
+                        showNotification('Você precisa fazer login para finalizar a compra.', 'info');
+                        showPage('login');
+                        return;
+                    }
+                    target.textContent = 'Processando...';
+                    target.disabled = true;
+                    setTimeout(() => {
+                        showNotification('Compra finalizada com sucesso! Obrigado.');
+                        state.cart = [];
+                        render();
+                    }, 2000);
+                }
+            });
+            
+            dom.cartContainer.addEventListener('click', (e) => { if (e.target.classList.contains('cart-item-remove')) removeFromCart(parseInt(e.target.dataset.id)); });
+            window.addEventListener('scroll', () => dom.scrollToTopBtn.classList.toggle('visible', window.scrollY > 300));
+            dom.scrollToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+            // --- INITIALIZATION ---
+            function init() {
+                fakeApi.getProducts().then(products => {
+                    state.products = products;
+                    if (fakeApi.isLoggedIn()) {
+                        state.isLoggedIn = true;
+                        state.currentUser = fakeApi.getAccountDetails();
+                    }
+                    render();
+                    showPage('home');
+                });
+            }
+
+            init();
+        });
+    </script>
+</body>
+</html>
